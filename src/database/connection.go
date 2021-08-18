@@ -8,11 +8,11 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func NewConnection(config *config.DB) *sqlx.DB {
+func NewConnection(config *config.Config) *sqlx.DB {
 	var err error
 
 	connString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s",
-		config.dbHost, config.dbPort, config.dbUsername, config.dbPassword, config.dbName)
+		config.DB_HOST, config.DB_PORT, config.DB_USERNAME, config.DB_PASSWORD, config.DB_NAME)
 
 	db, err := sqlx.Connect("postgres", connString)
 	if err != nil {

@@ -4,7 +4,7 @@ import (
 	"log"
 	"strconv"
 
-	"github.com/danielkov/gin-helmet"
+	helmet "github.com/danielkov/gin-helmet"
 	"github.com/firmanJS/gin-sqlx/src/config"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/gzip"
@@ -33,7 +33,7 @@ func SetupRouter() *gin.Engine {
 	/*
 	   @description Setup Database Connection
 	*/
-	db := config.Connection()
+	// db := database.NewConnection(&config.Config{})
 
 	/*
 	   @description Init Router
