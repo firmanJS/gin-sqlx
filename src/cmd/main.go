@@ -6,35 +6,37 @@ import (
 
 	helmet "github.com/danielkov/gin-helmet"
 	"github.com/firmanJS/gin-sqlx/src/config"
+	"github.com/firmanJS/gin-sqlx/src/database"
+	"github.com/firmanJS/gin-sqlx/src/repository/postgres"
+	"github.com/firmanJS/gin-sqlx/src/route"
+	"github.com/firmanJS/gin-sqlx/src/transport/rest"
+	"github.com/firmanJS/gin-sqlx/src/usecase"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
+	_ "github.com/lib/pq"
 )
 
 func main() {
 	/**
 	  @description Setup Server
 	*/
-	config, err := config.NewConfig()
+	config, err := config.AppConfig()
+
 	if err != nil {
 		log.Fatal(err)
 	}
-	/**
-	  @description Setup Server
-	*/
+
 	router := SetupRouter()
-	/**
-	  @description Run Server
-	*/
-	log.Fatal(router.Run(":" + strconv.Itoa(config.GO_PORT)))
+
+	log.Fatal(router.Run(":" + strconv.Itoa(config.AppPort)))
 }
 
 func SetupRouter() *gin.Engine {
 	/*
 	   @description Setup Database Connection
 	*/
-	// db := database.NewConnection(&config.Config{})
-
+	db := database.NewConnection()
 	/*
 	   @description Init Router
 	*/
@@ -43,14 +45,14 @@ func SetupRouter() *gin.Engine {
 	/*
 	   @description Setup Mode Application
 	*/
-	config, err := config.NewConfig()
+	config, err := config.AppConfig()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if config.GO_ENV != "production" && config.GO_ENV != "test" {
+	if config.AppEnv != "production" && config.AppEnv != "test" {
 		gin.SetMode(gin.DebugMode)
-	} else if config.GO_ENV == "test" {
+	} else if config.AppEnv == "test" {
 		gin.SetMode(gin.TestMode)
 	} else {
 		gin.SetMode(gin.ReleaseMode)
@@ -69,12 +71,13 @@ func SetupRouter() *gin.Engine {
 	router.Use(gzip.Gzip(gzip.BestCompression))
 
 	/**
-	  @description Init All Route
+	  @description Init All Routes
 	*/
-	// route.InitAuthRoutes(db, router)
-	// route.InitProductRoutes(db, router)
-	// route.InitCategoryRoutes(db, router)
-	// route.InitRoute(router)
+	product := postgres.NewProductRepository(db)
+	productUsecase := usecase.NewProduct(product)
+	rest.InitProductRestHttp(router, productUsecase)
+
+	route.InitRoute(router)
 
 	return router
 }

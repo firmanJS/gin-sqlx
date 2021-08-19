@@ -6,7 +6,24 @@ import (
 	"github.com/spf13/viper"
 )
 
-func init() {
+type Config struct {
+	AppPort int
+	AppEnv  string
+	Debug   bool
+	DB      *DB
+}
+
+type DB struct {
+	Driver   string
+	Host     string
+	Port     int
+	Username string
+	Password string
+	Name     string
+	DBSSL    string
+}
+
+func AppConfig() (defConfig *Config, err error) {
 	viper.SetConfigFile("../.env")
 	viper.AddConfigPath("../")
 	viper.AutomaticEnv()
@@ -14,40 +31,31 @@ func init() {
 	if err := viper.ReadInConfig(); err != nil {
 		fmt.Printf("Connont find config file, %s", err)
 	}
-}
-
-type Config struct {
-	GO_PORT     int
-	GO_ENV      string
-	DB_URI      string
-	GO_DEBUG    bool
-	DB_PORT     int
-	DB_HOST     string
-	DB_NAME     string
-	DB_USERNAME string
-	DB_PASSWORD string
-}
-
-func NewConfig() (defConfig *Config, err error) {
 	defConfig = &Config{}
 
-	appPort := viper.GetInt("GO_PORT")
 	appEnv := viper.GetString("GO_ENV")
-	appDebug := viper.GetBool("GO_DEBUG")
-	dbPort := viper.GetInt("DB_PORT")
+	appPort := viper.GetInt("GO_PORT")
+	debug := viper.GetString("GO_DEUG")
+
 	dbHost := viper.GetString("DB_HOST")
+	dbPort := viper.GetInt("DB_PORT")
 	dbName := viper.GetString("DB_NAME")
-	dbUsername := viper.GetString("DB_USERNAME")
+	dbUser := viper.GetString("DB_USERNAME")
 	dbPassword := viper.GetString("DB_PASSWORD")
 
-	defConfig.GO_ENV = appEnv
-	defConfig.GO_PORT = appPort
-	defConfig.GO_DEBUG = appDebug
-	defConfig.DB_HOST = dbHost
-	defConfig.DB_NAME = dbName
-	defConfig.DB_USERNAME = dbUsername
-	defConfig.DB_PASSWORD = dbPassword
-	defConfig.DB_PORT = dbPort
+	defConfig.AppEnv = appEnv
+	defConfig.AppPort = appPort
+	defConfig.Debug = debug
+
+	dbConfig := &DB{
+		Host:     dbHost,
+		Port:     dbPort,
+		Username: dbUser,
+		Password: dbPassword,
+		Name:     dbName,
+	}
+
+	defConfig.DB = dbConfig
 
 	return defConfig, nil
 }
