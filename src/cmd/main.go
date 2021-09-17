@@ -73,9 +73,9 @@ func SetupRouter() *gin.Engine {
 	/**
 	  @description Init All Routes
 	*/
-	product := postgres.NewProductRepository(db)
-	productUsecase := usecase.NewProduct(product)
-	rest.InitProductRestHttp(router, productUsecase)
+	pgRepo := postgres.NewPostgresRepositories(db)
+	usecaseInit := usecase.NewUcase(pgRepo)
+	rest.InitProductRestHttp(router, usecaseInit.ProductUsecase)
 
 	route.InitRoute(router)
 

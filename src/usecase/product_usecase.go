@@ -19,7 +19,7 @@ func NewProduct(repo repository.ProductRepositoryInterface) ProductUseCaseInterf
 
 func (product *Product) ProductList(ctx context.Context) (*model.Product, error) {
 
-	resp, err := product.repo.GetProduct(ctx)
+	resp, err := product.repo.ProductList(ctx)
 	if resp == nil {
 		return nil, nil
 	}

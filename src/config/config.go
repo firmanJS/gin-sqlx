@@ -35,7 +35,7 @@ func AppConfig() (defConfig *Config, err error) {
 
 	appEnv := viper.GetString("GO_ENV")
 	appPort := viper.GetInt("GO_PORT")
-	debug := viper.GetString("GO_DEUG")
+	debug := viper.GetBool("GO_DEUG")
 
 	dbHost := viper.GetString("DB_HOST")
 	dbPort := viper.GetInt("DB_PORT")

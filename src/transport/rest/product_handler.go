@@ -17,11 +17,11 @@ func InitProductRestHttp(r *gin.Engine, useCase usecase.ProductUseCaseInterface)
 
 	api := r.Group("/product")
 	{
-		api.GET("/", handler.get)
+		api.GET("/", handler.ProductList)
 	}
 }
 
-func (handler *RestProduct) get(c *gin.Context) {
+func (handler *RestProduct) ProductList(c *gin.Context) {
 
 	data, err := handler.useCase.ProductList(c.Request.Context())
 	if err != nil {

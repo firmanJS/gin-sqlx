@@ -20,7 +20,7 @@ func NewProductRepository(db *sqlx.DB) repository.ProductRepositoryInterface {
 	}
 }
 
-func (r *ProductRepository) GetProduct(ctx context.Context) (*model.Product, error) {
+func (r *ProductRepository) ProductList(ctx context.Context) (*model.Product, error) {
 	var query bytes.Buffer
 	var err error
 	var result = &model.Product{}

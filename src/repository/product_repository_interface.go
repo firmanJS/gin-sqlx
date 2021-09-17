@@ -7,5 +7,5 @@ import (
 )
 
 type ProductRepositoryInterface interface {
-	GetProduct(ctx context.Context) (*model.Product, error)
+	ProductList(ctx context.Context) (*model.Product, error)
 }
